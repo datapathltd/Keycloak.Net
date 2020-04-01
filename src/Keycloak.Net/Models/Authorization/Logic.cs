@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 
 namespace Keycloak.Net.Models.Authorization
 {
-    [JsonConverter(typeof(PermissionLogicConverter))]
-    public enum PermissionLogic
+    [JsonConverter(typeof(LogicConverter))]
+    public enum Logic
     {
         Positive,
         Negative

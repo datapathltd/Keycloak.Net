@@ -19,10 +19,10 @@ namespace Keycloak.Net.Models.Authorization
         public PermissionType Type { get; set; }
 
         [JsonProperty("logic")]
-        public PermissionLogic Logic { get; set; }
+        public Logic Logic { get; set; }
 
         [JsonProperty("decisionStrategy")]
-        public PermissionDecisionStrategy DecisionStrategy { get; set; }
+        public DecisionStrategy DecisionStrategy { get; set; }
 
         [JsonProperty("resources")]
         public IEnumerable<string> Resources { get; set; } = Enumerable.Empty<string>();

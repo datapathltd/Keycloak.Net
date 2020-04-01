@@ -144,9 +144,9 @@ namespace Keycloak.Net.Tests
 
             var permission = new Permission
             {
-                DecisionStrategy = PermissionDecisionStrategy.Consensus,
+                DecisionStrategy = DecisionStrategy.Consensus,
                 Description = "Create Permission",
-                Logic = PermissionLogic.Positive,
+                Logic = Logic.Positive,
                 Name = $"create-permission-{Guid.NewGuid()}",
                 Policies = Enumerable.Empty<string>(),
                 Resources = new[] { resource.Id },
@@ -183,9 +183,9 @@ namespace Keycloak.Net.Tests
 
             var permission = new Permission
             {
-                DecisionStrategy = PermissionDecisionStrategy.Consensus,
+                DecisionStrategy = DecisionStrategy.Consensus,
                 Description = "Update Permission",
-                Logic = PermissionLogic.Positive,
+                Logic = Logic.Positive,
                 Name = $"update-permission-{Guid.NewGuid()}",
                 Policies = Enumerable.Empty<string>(),
                 Resources = new[] { resource.Id },
@@ -204,8 +204,8 @@ namespace Keycloak.Net.Tests
                 Assert.NotNull(permissionId);
 
                 permission.Description = "Updated Permission";
-                permission.DecisionStrategy = PermissionDecisionStrategy.Unanimous;
-                permission.Logic = PermissionLogic.Negative;
+                permission.DecisionStrategy = DecisionStrategy.Unanimous;
+                permission.Logic = Logic.Negative;
 
                 var response = await _client.UpdatePermissionAsync(realm, clientsId, permissionId, permission);
                 Assert.True(response);
@@ -226,9 +226,9 @@ namespace Keycloak.Net.Tests
 
             var permission = new Permission
             {
-                DecisionStrategy = PermissionDecisionStrategy.Consensus,
+                DecisionStrategy = DecisionStrategy.Consensus,
                 Description = "Delete Permission",
-                Logic = PermissionLogic.Positive,
+                Logic = Logic.Positive,
                 Name = $"delete-permission-{Guid.NewGuid()}",
                 Policies = Enumerable.Empty<string>(),
                 Resources = new[] { resource.Id },
@@ -278,9 +278,9 @@ namespace Keycloak.Net.Tests
 
             var permission = new Permission
             {
-                DecisionStrategy = PermissionDecisionStrategy.Consensus,
+                DecisionStrategy = DecisionStrategy.Consensus,
                 Description = "Get Permission Resources",
-                Logic = PermissionLogic.Positive,
+                Logic = Logic.Positive,
                 Name = $"get-permission-resources-{Guid.NewGuid()}",
                 Policies = Enumerable.Empty<string>(),
                 Resources = new[] { resource.Id },

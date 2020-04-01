@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 
 namespace Keycloak.Net.Models.Authorization
 {
-    [JsonConverter(typeof(PermissionDecisionStrategyConverter))]
-    public enum PermissionDecisionStrategy
+    [JsonConverter(typeof(DecisionStrategyConverter))]
+    public enum DecisionStrategy
     {
         Affirmative, 
         Unanimous,

@@ -8,6 +8,8 @@ namespace Keycloak.Net
 {
     public partial class KeycloakClient
     {
+        #region Resources
+
         public async Task<string> CreateResourceAsync(string realm, string clientId, Resource resource)
         {
             var response = await GetBaseUrl(realm)
@@ -69,6 +71,10 @@ namespace Keycloak.Net
 
             return response.IsSuccessStatusCode;
         }
+
+        #endregion
+
+        #region Permissions
 
         public async Task<string> CreatePermissionAsync(string realm, string clientId, Permission permission)
         {
@@ -143,5 +149,78 @@ namespace Keycloak.Net
 
             return response ?? Enumerable.Empty<PermissionResource>();
         }
+
+        #endregion
+
+        #region Policies
+        
+        public async Task<string> CreatePolicyAsync(string realm, string clientId, Policy policy)
+        {
+            string policyType = policy.Type.ToString().ToLower();
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}")
+                .PostJsonAsync(policy)
+                .ReceiveJson<Policy>()
+                .ConfigureAwait(false);
+
+            return response.Id;
+        }
+
+        public async Task<Policy> GetPolicyAsync(string realm, string clientId, string policyId, PolicyType type)
+        {
+            string policyType = type.ToString().ToLower();
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}/{policyId}")
+                .GetAsync()
+                .ReceiveJson<Policy>()
+                .ConfigureAwait(false);
+
+            return response;
+        }
+
+        public async Task<IEnumerable<Policy>> GetPoliciesAsync(string realm, string clientId, int first = 0, int max = 20,
+            PolicyType? type = null, string name = null, string resource = null, string scope = null)
+        {
+            string policyType = type.HasValue
+                ? $"{type.ToString().ToLower()}"
+                : string.Empty;
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy{policyType}")
+                .SetQueryParam("first", first)
+                .SetQueryParam("max", max)
+                .SetQueryParam("name", name)
+                .SetQueryParam("permission", false)
+                .SetQueryParam("resource", resource)
+                .SetQueryParam("scope", scope)
+                .GetAsync()
+                .ReceiveJson<IEnumerable<Policy>>()
+                .ConfigureAwait(false);
+
+            return response ?? Enumerable.Empty<Policy>();
+        }
+
+        public async Task<bool> UpdatePolicyAsync(string realm, string clientId, string policyId, Policy policy)
+        {
+            string policyType = policy.Type.ToString().ToLower();
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}/{policyId}")
+                .PutJsonAsync(policy)
+                .ConfigureAwait(false);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeletePolicyAsync(string realm, string clientId, string policyId, PolicyType type)
+        {
+            string policyType = type.ToString().ToLower();
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}/{policyId}")
+                .DeleteAsync()
+                .ConfigureAwait(false);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        #endregion
     }
 }
