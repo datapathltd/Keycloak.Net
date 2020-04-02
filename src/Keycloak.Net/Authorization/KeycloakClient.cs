@@ -2,7 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
+using Flurl.Http.Configuration;
+using Keycloak.Net.Common.Converters;
 using Keycloak.Net.Models.Authorization;
+using Newtonsoft.Json;
 
 namespace Keycloak.Net
 {
@@ -150,10 +153,32 @@ namespace Keycloak.Net
             return response ?? Enumerable.Empty<PermissionResource>();
         }
 
+        public async Task<IEnumerable<PermissionScope>> GetPermissionScopesAsync(string realm, string clientId, string permissionId)
+        {
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/permission/{permissionId}/scopes")
+                .GetAsync()
+                .ReceiveJson<IEnumerable<PermissionScope>>()
+                .ConfigureAwait(false);
+
+            return response ?? Enumerable.Empty<PermissionScope>();
+        }
+
+        public async Task<IEnumerable<PermissionAssociatedPolicy>> GetPermissionPoliciesAsync(string realm, string clientId, string permissionId)
+        {
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/permission/{permissionId}/associatedPolicies")
+                .GetAsync()
+                .ReceiveJson<IEnumerable<PermissionAssociatedPolicy>>()
+                .ConfigureAwait(false);
+
+            return response ?? Enumerable.Empty<PermissionAssociatedPolicy>();
+        }
+
         #endregion
 
         #region Policies
-        
+
         public async Task<string> CreatePolicyAsync(string realm, string clientId, Policy policy)
         {
             string policyType = policy.Type.ToString().ToLower();
@@ -166,11 +191,17 @@ namespace Keycloak.Net
             return response.Id;
         }
 
-        public async Task<Policy> GetPolicyAsync(string realm, string clientId, string policyId, PolicyType type)
+        public async Task<Policy> GetPolicyAsync(string realm, string clientId, string policyId)
         {
-            string policyType = type.ToString().ToLower();
             var response = await GetBaseUrl(realm)
-                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}/{policyId}")
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyId}")
+                .ConfigureRequest(settings =>
+                {
+                    settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+                    {
+                        Converters = new JsonConverter[] { new PolicyWithConfigConverter() }
+                    });
+                })
                 .GetAsync()
                 .ReceiveJson<Policy>()
                 .ConfigureAwait(false);
@@ -192,6 +223,13 @@ namespace Keycloak.Net
                 .SetQueryParam("permission", false)
                 .SetQueryParam("resource", resource)
                 .SetQueryParam("scope", scope)
+                .ConfigureRequest(settings =>
+                {
+                    settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+                    {
+                        Converters = new JsonConverter[] { new PolicyWithConfigConverter() }
+                    });
+                })
                 .GetAsync()
                 .ReceiveJson<IEnumerable<Policy>>()
                 .ConfigureAwait(false);
@@ -210,11 +248,10 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeletePolicyAsync(string realm, string clientId, string policyId, PolicyType type)
+        public async Task<bool> DeletePolicyAsync(string realm, string clientId, string policyId)
         {
-            string policyType = type.ToString().ToLower();
             var response = await GetBaseUrl(realm)
-                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}/{policyId}")
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyId}")
                 .DeleteAsync()
                 .ConfigureAwait(false);
 

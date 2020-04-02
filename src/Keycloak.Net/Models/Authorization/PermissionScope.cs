@@ -2,9 +2,9 @@
 
 namespace Keycloak.Net.Models.Authorization
 {
-    public class PermissionResource
+    public class PermissionScope
     {
-        [JsonProperty("_id")]
+        [JsonProperty("id")]
         public string Id { get; set; }
 
         [JsonProperty("name")]

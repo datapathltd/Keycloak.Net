@@ -302,5 +302,138 @@ namespace Keycloak.Net.Tests
                 Assert.NotNull(permissionResources.SingleOrDefault());
             }
         }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task CreateUpdateAndDeleteUserPolicyAsync(string realm, string clientId)
+        {
+            var guid = Guid.NewGuid();
+            var policy = new Policy
+            {
+                Description = "Create User Policy",
+                Logic = Logic.Positive,
+                Name = $"create-user-policy-{guid}",
+                Type = PolicyType.User,
+                Users = new[] { "56afa4ab-3384-403b-a38d-c93a1c58aaf5" }
+            };
+
+            var clients = await _client.GetClientsAsync(realm);
+            string clientsId = clients.FirstOrDefault(x => x.ClientId == clientId)?.Id;
+            if (clientsId != null)
+            {
+                var policyId = await _client.CreatePolicyAsync(realm, clientsId, policy);
+                Assert.NotNull(policyId);
+
+                var createdPolicy = await _client.GetPolicyAsync(realm, clientsId, policyId);
+                Assert.NotNull(createdPolicy);
+                Assert.Equal(policy.Users.Count(), createdPolicy.Users.Count());
+
+                createdPolicy.Name = $"update-user-policy-{guid}";
+                createdPolicy.Description = "Update User Policy";
+
+                var updateResponse = await _client.UpdatePolicyAsync(realm, clientsId, policyId, createdPolicy);
+                Assert.True(updateResponse);
+
+                var deleteResponse = await _client.DeletePolicyAsync(realm, clientsId, policyId);
+                Assert.True(deleteResponse);
+            }
+        }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task CreateUpdateAndDeleteGroupPolicyAsync(string realm, string clientId)
+        {
+            var guid = Guid.NewGuid();
+            var policy = new Policy
+            {
+                Description = "Create Group Policy",
+                Logic = Logic.Positive,
+                Name = $"create-group-policy-{guid}",
+                Type = PolicyType.Group,
+                Groups = new[] { 
+                    new PolicyGroup
+                    {
+                        Id = "b3172a83-e7da-4d86-ae59-57aba035d431",
+                        ExtendChildren = true
+                    }
+                }
+            };
+
+            var clients = await _client.GetClientsAsync(realm);
+            string clientsId = clients.FirstOrDefault(x => x.ClientId == clientId)?.Id;
+            if (clientsId != null)
+            {
+                var policyId = await _client.CreatePolicyAsync(realm, clientsId, policy);
+                Assert.NotNull(policyId);
+
+                var createdPolicy = await _client.GetPolicyAsync(realm, clientsId, policyId);
+                Assert.NotNull(createdPolicy);
+                Assert.Equal(policy.Groups.Count(), createdPolicy.Groups.Count());
+
+                createdPolicy.Name = $"update-group-policy-{guid}";
+                createdPolicy.Description = "Update Group Policy";
+
+                var updateResponse = await _client.UpdatePolicyAsync(realm, clientsId, policyId, createdPolicy);
+                Assert.True(updateResponse);
+
+                var deleteResponse = await _client.DeletePolicyAsync(realm, clientsId, policyId);
+                Assert.True(deleteResponse);
+            }
+        }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task CreateUpdateAndDeleteRolePolicyAsync(string realm, string clientId)
+        {
+            var guid = Guid.NewGuid();
+            var policy = new Policy
+            {
+                Description = "Create Role Policy",
+                Logic = Logic.Positive,
+                Name = $"create-role-policy-{guid}",
+                Type = PolicyType.Role,
+                Roles = new[] {
+                    new PolicyRole
+                    {
+                        Id = "5dc7655b-5a30-42c4-a341-929e88cb389d",
+                        Required = true
+                    }
+                }
+            };
+
+            var clients = await _client.GetClientsAsync(realm);
+            string clientsId = clients.FirstOrDefault(x => x.ClientId == clientId)?.Id;
+            if (clientsId != null)
+            {
+                var policyId = await _client.CreatePolicyAsync(realm, clientsId, policy);
+                Assert.NotNull(policyId);
+
+                var createdPolicy = await _client.GetPolicyAsync(realm, clientsId, policyId);
+                Assert.NotNull(createdPolicy);
+                Assert.Equal(policy.Roles.Count(), createdPolicy.Roles.Count());
+
+                createdPolicy.Name = $"update-role-policy-{guid}";
+                createdPolicy.Description = "Update Role Policy";
+
+                var updateResponse = await _client.UpdatePolicyAsync(realm, clientsId, policyId, createdPolicy);
+                Assert.True(updateResponse);
+
+                var deleteResponse = await _client.DeletePolicyAsync(realm, clientsId, policyId);
+                Assert.True(deleteResponse);
+            }
+        }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task GetPoliciesAsync(string realm, string clientId)
+        {
+            var clients = await _client.GetClientsAsync(realm);
+            string clientsId = clients.FirstOrDefault(x => x.ClientId == clientId)?.Id;
+            if (clientsId != null)
+            {
+                var policies = await _client.GetPoliciesAsync(realm, clientsId);
+                Assert.True(policies.Any());
+            }
+        }
     }
 }
