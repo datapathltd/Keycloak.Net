@@ -435,5 +435,38 @@ namespace Keycloak.Net.Tests
                 Assert.True(policies.Any());
             }
         }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task GetPermissionsTokenAsync(string realm, string clientId)
+        {
+            string accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJMcGdSOGZ4NkZjYjIwVUpBRTI3UnpqdmZMVzR4Z0pLMEUwVlhNUFZqd1g0In0.eyJleHAiOjE1ODYyNTQ2MDMsImlhdCI6MTU4NjI1NDMwMywianRpIjoiNzZmODYwNDQtZDUyYi00OTUyLWFhMTMtMjZhMWJlNTM0N2E4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL0luc3VyYW5jZSIsInN1YiI6Ijc0YjAxOWNiLWNjMjktNDAyOC04ZmVkLTdhM2JjYTdjMmFmYiIsInR5cCI6IkJlYXJlciIsImF6cCI6Imluc3VyYW5jZSIsInNlc3Npb25fc3RhdGUiOiJhMDJmYjgxZi04ZWFhLTRkNjktODc2MS04YmVmZDk5Y2E4NjYiLCJhY3IiOiIxIiwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QifQ.SMf9uzL9QV0dySDSluqu-mlUNPlr7lXIaklFhb-Xsrvx1SuZigrkTgYbG27h70UGsST-4b3LIdL33AZFr8DsPHMSeCwBcIfvjd2Z_aPL4eUI7SFy-9khjkJPJVQBfljJHEMyV0Gv6y7Mr88_5ATSFzpLMO1oPOEXzzcTH7eEq4ecJG3dytitRCmWePU8ytTHNRURycNrF8iawHZIoVKRyea8J2S6_qDCcmZDg2ZbYwRdtADSrX6UGq_sBm8QCIxoDD4dDQJgPTyMX-_atHVXmv-zNu_6Hx7WIifqoWz18wtUAtGZSKmv0lOOhWjBOt32YsFAC9_coTDISuVVOKQiDw";
+            var requestedPermissions = new[] { "#read:scope" };
+
+            var permissions = await _client.GetPermissionsTokenAsync(realm, clientId, accessToken, requestedPermissions);
+            Assert.True(permissions.Any());
+        }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task GetSuccessfulPermissionsDecisionAsync(string realm, string clientId)
+        {
+            string accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJMcGdSOGZ4NkZjYjIwVUpBRTI3UnpqdmZMVzR4Z0pLMEUwVlhNUFZqd1g0In0.eyJleHAiOjE1ODYyNTYzMjcsImlhdCI6MTU4NjI1NjAyNywianRpIjoiMGVmNGJmZjYtZTUyMi00NTFkLTgyNTUtNjg0MGY5MGQ0MmY2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL0luc3VyYW5jZSIsInN1YiI6Ijc0YjAxOWNiLWNjMjktNDAyOC04ZmVkLTdhM2JjYTdjMmFmYiIsInR5cCI6IkJlYXJlciIsImF6cCI6Imluc3VyYW5jZSIsInNlc3Npb25fc3RhdGUiOiJhMDJmYjgxZi04ZWFhLTRkNjktODc2MS04YmVmZDk5Y2E4NjYiLCJhY3IiOiIxIiwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QifQ.Q9nP1JCaa-HzM80EppmnIdoRBrkbW6VpuOntZ93OwI_GzWeiF9Maqw7ERU3VDHahn0XRZEZaCWqMUW9H2GUxdZybL2kQV2TyNRy0dzQNTBJO_Ju-dR0XbZsXIT3NB-WzrNrLQHZc5fzpwtwXRDvKmgI77Mi1KB42Z6jdI3mtpMv7rZVPNrtBLSwg_jgseswh4b6q04XlStexe6KAknkFVnw7ywG6y3euiygUxcoMns8kIlnssAcrU3mNO1t3uIXmK8XB7rnp1zT4BMy4E-mfn-Mu2CivUxxzf6EUkAFd1s7piwV4bpl_GX-vIz9Ki9Z4WFGbKdlBTGO1dWndrv-x1w";
+            var requestedPermissions = new[] { "#read:scope" };
+
+            var result = await _client.GetPermissionsDecisionAsync(realm, clientId, accessToken, requestedPermissions);
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("Insurance", "insurance")]
+        public async Task GetUnsuccessfulPermissionsDecisionAsync(string realm, string clientId)
+        {
+            string accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJMcGdSOGZ4NkZjYjIwVUpBRTI3UnpqdmZMVzR4Z0pLMEUwVlhNUFZqd1g0In0.eyJleHAiOjE1ODYyNTYzMjcsImlhdCI6MTU4NjI1NjAyNywianRpIjoiMGVmNGJmZjYtZTUyMi00NTFkLTgyNTUtNjg0MGY5MGQ0MmY2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL0luc3VyYW5jZSIsInN1YiI6Ijc0YjAxOWNiLWNjMjktNDAyOC04ZmVkLTdhM2JjYTdjMmFmYiIsInR5cCI6IkJlYXJlciIsImF6cCI6Imluc3VyYW5jZSIsInNlc3Npb25fc3RhdGUiOiJhMDJmYjgxZi04ZWFhLTRkNjktODc2MS04YmVmZDk5Y2E4NjYiLCJhY3IiOiIxIiwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJ0ZXN0IHRlc3QiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0IiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InRlc3QifQ.Q9nP1JCaa-HzM80EppmnIdoRBrkbW6VpuOntZ93OwI_GzWeiF9Maqw7ERU3VDHahn0XRZEZaCWqMUW9H2GUxdZybL2kQV2TyNRy0dzQNTBJO_Ju-dR0XbZsXIT3NB-WzrNrLQHZc5fzpwtwXRDvKmgI77Mi1KB42Z6jdI3mtpMv7rZVPNrtBLSwg_jgseswh4b6q04XlStexe6KAknkFVnw7ywG6y3euiygUxcoMns8kIlnssAcrU3mNO1t3uIXmK8XB7rnp1zT4BMy4E-mfn-Mu2CivUxxzf6EUkAFd1s7piwV4bpl_GX-vIz9Ki9Z4WFGbKdlBTGO1dWndrv-x1w";
+            var requestedPermissions = new[] { "#write:scope" };
+
+            var result = await _client.GetPermissionsDecisionAsync(realm, clientId, accessToken, requestedPermissions);
+            Assert.False(result);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
@@ -256,6 +257,73 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
 
             return response.IsSuccessStatusCode;
+        }
+
+        #endregion
+
+        #region Permissions Token
+
+        public async Task<IEnumerable<PermissionsTokenResource>> GetPermissionsTokenAsync(string realm, string client, string accessToken, string[] permissions = null)
+        {
+            var data = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket"),
+                new KeyValuePair<string, string>("response_mode", "permissions"),
+                new KeyValuePair<string, string>("audience", client)
+            };
+
+            var permissionsToAdd = (permissions ?? Enumerable.Empty<string>())
+                .Select(permission => new KeyValuePair<string, string>("permission", permission));
+
+            data.AddRange(permissionsToAdd);
+
+            try
+            {
+                var response = await GetBaseUrl(realm)
+                    .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
+                    .WithOAuthBearerToken(accessToken)
+                    .PostUrlEncodedAsync(data)
+                    .ReceiveJson<IEnumerable<PermissionsTokenResource>>()
+                    .ConfigureAwait(false);
+
+                return response;
+            }
+            catch (FlurlHttpException ex) when (ex.Call.HttpStatus == HttpStatusCode.Forbidden)
+            {
+                return Enumerable.Empty<PermissionsTokenResource>();
+            }
+        }
+
+        public async Task<bool> GetPermissionsDecisionAsync(string realm, string client, string accessToken, string[] permissions = null)
+        {
+            var data = new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket"),
+                new KeyValuePair<string, object>("response_mode", "decision"),
+                new KeyValuePair<string, object>("audience", client)
+            };
+
+            data.Add(new KeyValuePair<string, object>("permission", permissions));
+
+            bool decision;
+
+            try
+            {
+                var response = await GetBaseUrl(realm)
+                    .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
+                    .WithOAuthBearerToken(accessToken)
+                    .PostUrlEncodedAsync(data)
+                    .ReceiveJson<PermissionsTokenDecision>()
+                    .ConfigureAwait(false);
+
+                decision = response.Result;
+            }
+            catch (FlurlHttpException ex) when (ex.Call.HttpStatus == HttpStatusCode.Forbidden)
+            {
+                decision = false;
+            }
+
+            return decision;
         }
 
         #endregion
