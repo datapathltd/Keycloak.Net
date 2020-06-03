@@ -263,7 +263,7 @@ namespace Keycloak.Net
 
         #region Permissions Token
 
-        public async Task<IEnumerable<PermissionsTokenResource>> GetPermissionsTokenAsync(string realm, string client, string accessToken, string[] permissions = null)
+        public async Task<IEnumerable<PermissionsTokenPermission>> GetPermissionsTokenPermissionsAsync(string realm, string client, string accessToken, string[] permissions = null)
         {
             var data = new List<KeyValuePair<string, string>>
             {
@@ -283,14 +283,14 @@ namespace Keycloak.Net
                     .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
                     .WithOAuthBearerToken(accessToken)
                     .PostUrlEncodedAsync(data)
-                    .ReceiveJson<IEnumerable<PermissionsTokenResource>>()
+                    .ReceiveJson<IEnumerable<PermissionsTokenPermission>>()
                     .ConfigureAwait(false);
 
                 return response;
             }
             catch (FlurlHttpException ex) when (ex.Call.HttpStatus == HttpStatusCode.Forbidden)
             {
-                return Enumerable.Empty<PermissionsTokenResource>();
+                return Enumerable.Empty<PermissionsTokenPermission>();
             }
         }
 

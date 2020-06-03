@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Keycloak.Net.Models.Authorization
 {
-    public class PermissionsTokenResource
+    public class PermissionsTokenPermission
     {
         [JsonProperty("rsid")]
         public string ResourceId { get; set; }
