@@ -52,7 +52,7 @@ namespace Keycloak.Net
                 .GetAsync()
                 .ReceiveJson<IEnumerable<Resource>>()
                 .ConfigureAwait(false);
-            
+
             return response;
         }
 
@@ -104,7 +104,7 @@ namespace Keycloak.Net
             return response;
         }
 
-        public async Task<IEnumerable<Permission>> GetPermissionsAsync(string realm, string clientId, int first = 0, int max = 20, 
+        public async Task<IEnumerable<Permission>> GetPermissionsAsync(string realm, string clientId, int first = 0, int max = 20,
             string name = null, string resource = null, string scope = null)
         {
             var response = await GetBaseUrl(realm)
@@ -217,7 +217,7 @@ namespace Keycloak.Net
                 ? $"{type.ToString().ToLower()}"
                 : string.Empty;
             var response = await GetBaseUrl(realm)
-                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy{policyType}")
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyType}")
                 .SetQueryParam("first", first)
                 .SetQueryParam("max", max)
                 .SetQueryParam("name", name)
@@ -236,6 +236,18 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
 
             return response ?? Enumerable.Empty<Policy>();
+        }
+
+        public async Task<IEnumerable<Permission>> GetDependentPermissionsForPolicyAsync(string realm, string clientId, string policyId)
+        {
+            // The path is /dependentPolicies but it actually returns dependent permissions
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/{policyId}/dependentPolicies")
+                .GetAsync()
+                .ReceiveJson<IEnumerable<Permission>>()
+                .ConfigureAwait(false);
+
+            return response ?? Enumerable.Empty<Permission>();
         }
 
         public async Task<bool> UpdatePolicyAsync(string realm, string clientId, string policyId, Policy policy)

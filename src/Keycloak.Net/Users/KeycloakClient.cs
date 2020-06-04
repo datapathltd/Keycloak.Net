@@ -161,11 +161,18 @@ namespace Keycloak.Net
 			return Convert.ToInt32(DynamicExtensions.GetFirstPropertyValue(result));
 		}
 
-		public async Task<bool> UpdateUserGroupAsync(string realm, string userId, string groupId, Group group)
-		{
+		public async Task<bool> UpdateUserGroupAsync(string realm, string userId, string groupId)
+        {
+            var userGroupUpdate = new UserGroupUpdate
+            {
+                GroupId = groupId,
+                Realm = realm,
+                UserId = userId
+            };
+
 			var response = await GetBaseUrl(realm)
 				.AppendPathSegment($"/admin/realms/{realm}/users/{userId}/groups/{groupId}")
-				.PutJsonAsync(group)
+				.PutJsonAsync(userGroupUpdate)
 				.ConfigureAwait(false);
 			return response.IsSuccessStatusCode;
 		}
