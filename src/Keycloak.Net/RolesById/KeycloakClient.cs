@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Flurl.Http;
@@ -34,7 +35,13 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> MakeRoleCompositeAsync(string realm, string roleId, IEnumerable<Role> roles)
+        [Obsolete("Misleading method name, use AddCompositesToRoleById instead")]
+        public Task<bool> MakeRoleCompositeAsync(string realm, string roleId, IEnumerable<Role> roles)
+        {
+            return AddCompositesToRoleByIdAsync(realm, roleId, roles);
+        }
+
+        public async Task<bool> AddCompositesToRoleByIdAsync(string realm, string roleId, IEnumerable<Role> roles)
         {
             var response = await GetBaseUrl(realm)
                 .AppendPathSegment($"/admin/realms/{realm}/roles-by-id/{roleId}/composites")

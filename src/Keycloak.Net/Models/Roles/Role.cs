@@ -15,6 +15,8 @@ namespace Keycloak.Net.Models.Roles
         public bool? ClientRole { get; set; }
         [JsonProperty("containerId")]
         public string ContainerId { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
         [JsonProperty("attributes")]
         public IDictionary<string, string> Attributes { get; set; }
 

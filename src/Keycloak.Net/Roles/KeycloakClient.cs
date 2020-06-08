@@ -30,7 +30,7 @@ namespace Keycloak.Net
             .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/roles/{roleName}")
             .GetJsonAsync<Role>()
             .ConfigureAwait(false);
-        
+
         public async Task<bool> UpdateRoleByNameAsync(string realm, string clientId, string roleName, Role role)
         {
             var response = await GetBaseUrl(realm)
@@ -143,7 +143,7 @@ namespace Keycloak.Net
             .AppendPathSegment($"/admin/realms/{realm}/roles/{roleName}")
             .GetJsonAsync<Role>()
             .ConfigureAwait(false);
-        
+
         public async Task<bool> UpdateRoleByNameAsync(string realm, string roleName, Role role)
         {
             var response = await GetBaseUrl(realm)
