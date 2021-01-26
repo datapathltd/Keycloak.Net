@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -105,10 +106,26 @@ namespace Keycloak.Net
         }
 
         public async Task<IEnumerable<Permission>> GetPermissionsAsync(string realm, string clientId, int first = 0, int max = 20,
-            string name = null, string resource = null, string scope = null)
+            string name = null, string resource = null, string scope = null, PermissionType? permissionType = null)
         {
+            string pathSuffix;
+            switch (permissionType)
+            {
+                case PermissionType.Resource:
+                    pathSuffix = "/resource";
+                    break;
+                case PermissionType.Scope:
+                    pathSuffix = "/scope";
+                    break;
+                case null:
+                    pathSuffix = string.Empty;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(permissionType), permissionType, null);
+            }
+
             var response = await GetBaseUrl(realm)
-                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/permission")
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/permission{pathSuffix}")
                 .SetQueryParam("first", first)
                 .SetQueryParam("max", max)
                 .SetQueryParam("name", name)
