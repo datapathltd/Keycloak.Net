@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
@@ -22,7 +21,7 @@ namespace Keycloak.Net.Common.Extensions
             return accessToken;
         }
 
-        private static string GetAccessToken(string url, string realm, string userName, string password) 
+        private static string GetAccessToken(string url, string realm, string userName, string password)
             => GetAccessTokenAsync(url, realm, new PasswordGrantCredentials(userName, password)).GetAwaiter().GetResult();
 
         public static IFlurlRequest WithAuthentication(this IFlurlRequest request, Func<string> getToken, string url, string realm, string userName, string password)

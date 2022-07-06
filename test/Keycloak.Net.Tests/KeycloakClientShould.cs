@@ -14,9 +14,9 @@ namespace Keycloak.Net.Tests
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            string url = configuration["url"];
-            string userName = configuration["userName"];
-            string password = configuration["password"];
+            string url = "https://local-nm-hyperv"; //;
+            string userName = "admin"; //configuration["userName"];
+            string password = "admin"; //configuration["password"];
 
             _client = new KeycloakClient(url, userName, password);
         }

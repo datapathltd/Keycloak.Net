@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Keycloak.Net.Models.Components;
@@ -7,13 +9,22 @@ namespace Keycloak.Net
 {
     public partial class KeycloakClient
     {
-        public async Task<bool> CreateComponentAsync(string realm, Component componentRepresentation)
+        public async Task<string> CreateComponentAsync(string realm, Component componentRepresentation)
         {
             var response = await GetBaseUrl(realm)
                 .AppendPathSegment($"/admin/realms/{realm}/components")
                 .PostJsonAsync(componentRepresentation)
                 .ConfigureAwait(false);
-            return response.IsSuccessStatusCode;
+            if (response.IsSuccessStatusCode)
+            {
+                var componentUrl = new Uri(response.GetHeaderValue("location"));
+                var componentId = componentUrl.Segments.Last();
+                return componentId;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<Component>> GetComponentsAsync(string realm, string name = null, string parent = null, string type = null)
