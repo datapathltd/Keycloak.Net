@@ -15,8 +15,8 @@ namespace Keycloak.Net.Tests
                 .Build();
 
             string url = "https://local-nm-hyperv"; //;
-            string userName = "admin"; //configuration["userName"];
-            string password = "admin"; //configuration["password"];
+            string userName = "superuser"; //configuration["userName"];
+            string password = "Superuser"; //configuration["password"];
 
             _client = new KeycloakClient(url, userName, password);
         }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Keycloak.Net.Models.RealmsAdmin;
 using Xunit;
 
 namespace Keycloak.Net.Tests
@@ -89,6 +90,34 @@ namespace Keycloak.Net.Tests
         {
             var result = await _client.GetRealmUsersManagementPermissionsAsync(realm);
             Assert.NotNull(result);
+        }
+
+        [Theory]
+        [InlineData("Insurance")]
+        public async Task TestLdapConnectionAsync(string realm)
+        {
+            var result = await _client.TestLdapConnectionAsync(realm, new TestLdapConnection
+            {
+                Action = "testConnection",
+                ConnectionUrl = "ldap://dc.somedomain.local"
+            });
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("Insurance")]
+        public async Task TestLdapAuthenticationAsync(string realm)
+        {
+            var result = await _client.TestLdapConnectionAsync(realm, new TestLdapConnection
+            {
+                Action = "testAuthentication",
+                ConnectionUrl = "ldap://dc.somedomain.local",
+                AuthType = "simple",
+                BindCredential = "somepassword",
+                BindDn = "CN=Keycloak,CN=Users,DC=somedomain,DC=local",
+                UseTruststoreSpi = "ldapsOnly",
+            });
+            Assert.True(result);
         }
     }
 }

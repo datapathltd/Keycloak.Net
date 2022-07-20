@@ -25,7 +25,7 @@ namespace Keycloak.Net
             .AppendPathSegment($"/admin/realms/{realm}")
             .GetJsonAsync<Realm>()
             .ConfigureAwait(false);
-        
+
         public async Task<bool> UpdateRealmAsync(string realm, Realm rep)
         {
             var response = await GetBaseUrl(realm)
@@ -44,9 +44,11 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<AdminEvent>> GetAdminEventsAsync(string realm, string authClient = null, string authIpAddress = null, string authRealm = null, string authUser = null,
-            string dateFrom = null, string dateTo = null, int? first = null, int? max = null, 
-            IEnumerable<string> operationTypes = null, string resourcePath = null, IEnumerable<string> resourceTypes = null)
+        public async Task<IEnumerable<AdminEvent>> GetAdminEventsAsync(string realm, string authClient = null,
+            string authIpAddress = null, string authRealm = null, string authUser = null,
+            string dateFrom = null, string dateTo = null, int? first = null, int? max = null,
+            IEnumerable<string> operationTypes = null, string resourcePath = null,
+            IEnumerable<string> resourceTypes = null)
         {
             var queryParams = new Dictionary<string, object>
             {
@@ -78,7 +80,7 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
-        
+
         public async Task<bool> ClearKeysCacheAsync(string realm)
         {
             var response = await GetBaseUrl(realm)
@@ -87,7 +89,7 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
-        
+
         public async Task<bool> ClearRealmCacheAsync(string realm)
         {
             var response = await GetBaseUrl(realm)
@@ -96,7 +98,7 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
-        
+
         public async Task<bool> ClearUserCacheAsync(string realm)
         {
             var response = await GetBaseUrl(realm)
@@ -105,23 +107,26 @@ namespace Keycloak.Net
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
-        
-        public async Task<Client> BasePathForImportingClientsAsync(string realm, string description) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/client-description-converter")
-            .PostAsync(new StringContent(description))
-            .ReceiveJson<Client>()
-            .ConfigureAwait(false);
 
-        public async Task<IEnumerable<IDictionary<string, object>>> GetClientSessionStatsAsync(string realm) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/client-session-stats")
-            .GetJsonAsync<IEnumerable<IDictionary<string, object>>>()
-            .ConfigureAwait(false);
+        public async Task<Client> BasePathForImportingClientsAsync(string realm, string description) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/client-description-converter")
+                .PostAsync(new StringContent(description))
+                .ReceiveJson<Client>()
+                .ConfigureAwait(false);
 
-        public async Task<IEnumerable<ClientScope>> GetRealmDefaultClientScopesAsync(string realm) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/default-default-client-scopes")
-            .GetJsonAsync<IEnumerable<ClientScope>>()
-            .ConfigureAwait(false);
-        
+        public async Task<IEnumerable<IDictionary<string, object>>> GetClientSessionStatsAsync(string realm) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/client-session-stats")
+                .GetJsonAsync<IEnumerable<IDictionary<string, object>>>()
+                .ConfigureAwait(false);
+
+        public async Task<IEnumerable<ClientScope>> GetRealmDefaultClientScopesAsync(string realm) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/default-default-client-scopes")
+                .GetJsonAsync<IEnumerable<ClientScope>>()
+                .ConfigureAwait(false);
+
         public async Task<bool> UpdateRealmDefaultClientScopeAsync(string realm, string clientScopeId)
         {
             var response = await GetBaseUrl(realm)
@@ -144,7 +149,7 @@ namespace Keycloak.Net
             .AppendPathSegment($"/admin/realms/{realm}/default-groups")
             .GetJsonAsync<IEnumerable<Group>>()
             .ConfigureAwait(false);
-        
+
         public async Task<bool> UpdateRealmGroupAsync(string realm, string groupId)
         {
             var response = await GetBaseUrl(realm)
@@ -163,11 +168,12 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<ClientScope>> GetRealmOptionalClientScopesAsync(string realm) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/default-optional-client-scopes")
-            .GetJsonAsync<IEnumerable<ClientScope>>()
-            .ConfigureAwait(false);
-        
+        public async Task<IEnumerable<ClientScope>> GetRealmOptionalClientScopesAsync(string realm) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/default-optional-client-scopes")
+                .GetJsonAsync<IEnumerable<ClientScope>>()
+                .ConfigureAwait(false);
+
         public async Task<bool> UpdateRealmOptionalClientScopeAsync(string realm, string clientScopeId)
         {
             var response = await GetBaseUrl(realm)
@@ -186,7 +192,8 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(string realm, string client = null, string dateFrom = null, string dateTo = null, int? first = null, 
+        public async Task<IEnumerable<Event>> GetEventsAsync(string realm, string client = null, string dateFrom = null,
+            string dateTo = null, int? first = null,
             string ipAddress = null, int? max = null, string type = null, string user = null)
         {
             var queryParams = new Dictionary<string, object>
@@ -217,10 +224,11 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<RealmEventsConfig> GetRealmEventsProviderConfigurationAsync(string realm) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/events/config")
-            .GetJsonAsync<RealmEventsConfig>()
-            .ConfigureAwait(false);
+        public async Task<RealmEventsConfig> GetRealmEventsProviderConfigurationAsync(string realm) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/events/config")
+                .GetJsonAsync<RealmEventsConfig>()
+                .ConfigureAwait(false);
 
         public async Task<bool> UpdateRealmEventsProviderConfigurationAsync(string realm, RealmEventsConfig rep)
         {
@@ -242,7 +250,8 @@ namespace Keycloak.Net
             .ReceiveJson<GlobalRequestResult>()
             .ConfigureAwait(false);
 
-        public async Task<Realm> RealmPartialExportAsync(string realm, bool? exportClients = null, bool? exportGroupsAndRoles = null)
+        public async Task<Realm> RealmPartialExportAsync(string realm, bool? exportClients = null,
+            bool? exportGroupsAndRoles = null)
         {
             var queryParams = new Dictionary<string, object>
             {
@@ -282,19 +291,12 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> TestLdapConnectionAsync(string realm, string action = null, string bindCredential = null, string bindDn = null, 
-            string componentId = null, string connectionTimeout = null, string connectionUrl = null, string useTruststoreSpi = null)
+        public async Task<bool> TestLdapConnectionAsync(string realm, TestLdapConnection testLdapConnection)
         {
             var response = await GetBaseUrl(realm)
                 .AppendPathSegment($"/admin/realms/{realm}/testLDAPConnection")
-                .PostMultipartAsync(content => content
-                    .AddString(nameof(action), action)
-                    .AddString(nameof(bindCredential), bindCredential)
-                    .AddString(nameof(bindDn), bindDn)
-                    .AddString(nameof(componentId), componentId)
-                    .AddString(nameof(connectionTimeout), connectionTimeout)
-                    .AddString(nameof(connectionUrl), connectionUrl)
-                    .AddString(nameof(useTruststoreSpi), useTruststoreSpi))
+                .AllowAnyHttpStatus()
+                .PostJsonAsync(testLdapConnection)
                 .ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
@@ -308,12 +310,14 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<ManagementPermission> GetRealmUsersManagementPermissionsAsync(string realm) => await GetBaseUrl(realm)
-            .AppendPathSegment($"/admin/realms/{realm}/users-management-permissions")
-            .GetJsonAsync<ManagementPermission>()
-            .ConfigureAwait(false);
+        public async Task<ManagementPermission> GetRealmUsersManagementPermissionsAsync(string realm) =>
+            await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/users-management-permissions")
+                .GetJsonAsync<ManagementPermission>()
+                .ConfigureAwait(false);
 
-        public async Task<ManagementPermission> UpdateRealmUsersManagementPermissionsAsync(string realm, ManagementPermission managementPermission)
+        public async Task<ManagementPermission> UpdateRealmUsersManagementPermissionsAsync(string realm,
+            ManagementPermission managementPermission)
         {
             return await GetBaseUrl(realm)
                 .AppendPathSegment($"/admin/realms/{realm}/users-management-permissions")
