@@ -9,7 +9,7 @@ namespace Keycloak.Net.Tests
     public partial class KeycloakClientShould
     {
         [Theory]
-        [InlineData("networkmanager")]
+        [InlineData("Insurance")]
         public async Task GetComponentsAsync(string realm)
         {
             var result = await _client.GetComponentsAsync("master", realm);
@@ -20,7 +20,7 @@ namespace Keycloak.Net.Tests
         [InlineData("Insurance")]
         public async Task GetComponentAsync(string realm)
         {
-            var components = await _client.GetComponentsAsync("master", realm);
+            var components = await _client.GetComponentsAsync("somerealm", "Ldap");
             string componentId = components.FirstOrDefault()?.Id;
             if (componentId != null)
             {
