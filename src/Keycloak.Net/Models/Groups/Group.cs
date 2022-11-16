@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Keycloak.Net.Models.Groups
 {
@@ -10,5 +11,7 @@ namespace Keycloak.Net.Models.Groups
         public string Name { get; set; }
         [JsonProperty("path")]
         public string Path { get; set; }
+        [JsonProperty("attributes")]
+        public Dictionary<string, IEnumerable<string>> Attributes { get; set; }
     }
 }

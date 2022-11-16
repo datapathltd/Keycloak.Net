@@ -22,13 +22,15 @@ namespace Keycloak.Net
             return response.Headers.Location.Segments.Last();
         }
 
-        public async Task<IEnumerable<Group>> GetGroupHierarchyAsync(string realm, int? first = null, int? max = null, string search = null)
+        public async Task<IEnumerable<Group>> GetGroupHierarchyAsync(string realm, int? first = null, int? max = null, string search = null,
+            bool? briefRepresentation = true)
         {
             var queryParams = new Dictionary<string, object>
             {
                 [nameof(first)] = first,
                 [nameof(max)] = max,
-                [nameof(search)] = search
+                [nameof(search)] = search,
+                [nameof(briefRepresentation)] = briefRepresentation
             };
 
             return await GetBaseUrl(realm)

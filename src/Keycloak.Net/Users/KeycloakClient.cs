@@ -147,10 +147,14 @@ namespace Keycloak.Net
 			return response.IsSuccessStatusCode;
 		}
 
-		public async Task<IEnumerable<Group>> GetUserGroupsAsync(string realm, string userId) => await GetBaseUrl(realm)
-			.AppendPathSegment($"/admin/realms/{realm}/users/{userId}/groups")
-			.GetJsonAsync<IEnumerable<Group>>()
-			.ConfigureAwait(false);
+		public async Task<IEnumerable<Group>> GetUserGroupsAsync(string realm, string userId, bool? briefRepresentation = false)
+		{
+			return await GetBaseUrl(realm)
+				.AppendPathSegment($"/admin/realms/{realm}/users/{userId}/groups")
+				.SetQueryParam(nameof(briefRepresentation), briefRepresentation)
+				.GetJsonAsync<IEnumerable<Group>>()
+				.ConfigureAwait(false);
+		}
 
 		public async Task<int> GetUserGroupsCountAsync(string realm, string userId)
 		{
