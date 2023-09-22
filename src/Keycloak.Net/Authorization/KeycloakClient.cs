@@ -292,7 +292,7 @@ namespace Keycloak.Net
 
         #region Permissions Token
 
-        public async Task<IEnumerable<PermissionsTokenPermission>> GetPermissionsTokenPermissionsAsync(string baseUrl, string realm, string client, string accessToken, string[] permissions = null)
+        public async Task<IEnumerable<PermissionsTokenPermission>> GetPermissionsTokenPermissionsAsync(string realm, string client, string accessToken, string[] permissions = null)
         {
             var data = new List<KeyValuePair<string, string>>
             {
@@ -308,9 +308,7 @@ namespace Keycloak.Net
 
             try
             {
-                // This method takes a custom base URL since Keycloak verifies the Issuer (iss) field in the access token against the URL being called.
-                // Therefore it is necessary to let the client pass the URL in rather than use the static URL set for the KeycloakClient instance.
-                var response = await GetCustomBaseUrl(baseUrl)
+                var response = await GetBaseUrl(realm)
                     .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
                     .WithOAuthBearerToken(accessToken)
                     .PostUrlEncodedAsync(data)
@@ -325,7 +323,7 @@ namespace Keycloak.Net
             }
         }
 
-        public async Task<bool> GetPermissionsDecisionAsync(string baseUrl, string realm, string client, string accessToken, string[] permissions = null)
+        public async Task<bool> GetPermissionsDecisionAsync(string realm, string client, string accessToken, string[] permissions = null)
         {
             var data = new List<KeyValuePair<string, object>>
             {
@@ -340,14 +338,12 @@ namespace Keycloak.Net
 
             try
             {
-                // This method takes a custom base URL since Keycloak verifies the Issuer (iss) field in the access token against the URL being called.
-                // Therefore it is necessary to let the client pass the URL in rather than use the static URL set for the KeycloakClient instance.
-                var response = await GetCustomBaseUrl(baseUrl)
-                    .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
-                    .WithOAuthBearerToken(accessToken)
-                    .PostUrlEncodedAsync(data)
-                    .ReceiveJson<PermissionsTokenDecision>()
-                    .ConfigureAwait(false);
+                var response = await GetBaseUrl(realm)
+                                     .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
+                                     .WithOAuthBearerToken(accessToken)
+                                     .PostUrlEncodedAsync(data)
+                                     .ReceiveJson<PermissionsTokenDecision>()
+                                     .ConfigureAwait(false);
 
                 decision = response.Result;
             }
