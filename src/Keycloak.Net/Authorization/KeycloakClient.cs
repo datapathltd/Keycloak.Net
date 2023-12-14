@@ -322,6 +322,30 @@ namespace Keycloak.Net
                 return Enumerable.Empty<PermissionsTokenPermission>();
             }
         }
+        
+        public async Task<RequestPartyTokenPermission> GetRequestedPartyTokenAsync(string realm, string client, string accessToken)
+        {
+            var data = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket"),
+                new KeyValuePair<string, string>("audience", client)
+            };
+            try
+            {
+                var response = await GetBaseUrl(realm)
+                    .AppendPathSegment($"/realms/{realm}/protocol/openid-connect/token")
+                    .WithOAuthBearerToken(accessToken)
+                    .PostUrlEncodedAsync(data)
+                    .ReceiveJson<RequestPartyTokenPermission>()
+                    .ConfigureAwait(false);
+
+                return response;
+            }
+            catch (FlurlHttpException ex) when (ex.Call.HttpStatus == HttpStatusCode.Forbidden)
+            {
+                return new RequestPartyTokenPermission();
+            }
+        }
 
         public async Task<bool> GetPermissionsDecisionAsync(string realm, string client, string accessToken, string[] permissions = null)
         {
