@@ -20,5 +20,7 @@ namespace Keycloak.Net.Models.Clients
         public string IncludedClientAudience { get; set; }
         [JsonProperty("included.custom.audience")]
         public string IncludedCustomAudience { get; set; }
+        [JsonProperty("user.session.note")]
+        public string UserSessionNote { get; set; }
     }
 }
