@@ -66,5 +66,13 @@ namespace Keycloak.Net
                 ? url.WithAuthentication(_url, authenticationRealm, _credentials)
                 : url.WithAuthentication(_getToken, _url, authenticationRealm, _userName, _password);
         }
+
+        private static IFlurlRequest GetCustomBaseUrl(Url url)
+        {
+            return new Url(url)
+                .AppendPathSegment("/auth")
+                .ConfigureRequest(settings => settings.JsonSerializer = s_serializer);
+        }
+
     }
 }
