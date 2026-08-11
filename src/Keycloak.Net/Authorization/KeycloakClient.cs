@@ -77,6 +77,17 @@ namespace Keycloak.Net
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<string> EvaluateResourcePermissionsAsync(string realm, string clientId, PolicyEvaluationRequest evaluationRequest)
+        {
+            var response = await GetBaseUrl(realm)
+                .AppendPathSegment($"/admin/realms/{realm}/clients/{clientId}/authz/resource-server/policy/evaluate")
+                .PostJsonAsync(evaluationRequest)
+                .ReceiveString()
+                .ConfigureAwait(false);
+
+            return response;
+        }
+
         #endregion
 
         #region Permissions
@@ -324,7 +335,7 @@ namespace Keycloak.Net
                 return Enumerable.Empty<PermissionsTokenPermission>();
             }
         }
-        
+
         public async Task<RequestPartyTokenPermission> GetRequestedPartyTokenAsync(string realm, string client, string accessToken)
         {
             var data = new List<KeyValuePair<string, string>>
