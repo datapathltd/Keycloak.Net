@@ -9,5 +9,8 @@ namespace Keycloak.Net.Models.Authorization
 
         [JsonProperty("scopes")]
         public Scope[] Scopes { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }
